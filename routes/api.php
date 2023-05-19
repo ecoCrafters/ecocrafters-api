@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ResetPasswordController;
@@ -25,9 +26,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-// Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword']);
-// Route::post('reset-password', [NewPasswordController::class, 'reset']);
-// Route::post('is-email-exist', [UserController::class, 'isEmailExist']);
 
 Route::post('password/email', [ForgotPasswordController::class, '__invoke']);
 Route::post('password/code/check', [CodeCheckController::class, '__invoke']);
@@ -36,4 +34,7 @@ Route::post('password/reset', [ResetPasswordController::class, '__invoke']);
 
 Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('profil', [UserController::class, 'show']);
+    Route::get('users/{username}', [UserController::class, 'getUserByUsername']);
+    Route::put('users', [UserController::class, 'update']);
 });
