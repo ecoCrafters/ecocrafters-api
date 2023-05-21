@@ -34,7 +34,7 @@ Route::post('password/reset', [ResetPasswordController::class, '__invoke']);
 
 Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('profil', [UserController::class, 'show']);
+    Route::get('profile', [UserController::class, 'show']);
+    Route::put('profile', [UserController::class, 'update']);
     Route::get('users/{username}', [UserController::class, 'getUserByUsername']);
-    Route::put('users', [UserController::class, 'update']);
 });

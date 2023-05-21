@@ -8,6 +8,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
+
+
 class UserController extends Controller
 {
     private $user;
@@ -22,6 +26,18 @@ class UserController extends Controller
         $user = getUser($this->user->id);
 
         return response()->json($user);
+    }
+
+    public function uploadFile(UploadedFile $file, $folder = null, $filename = null)
+    {
+        // $name = !is_null($filename) ? $filename : Str::random(25);
+        $name = "avatar-" . auth()->user()->first_name . auth()->user()->last_name;
+
+        return $file->storeAs(
+            $folder,
+            $name . "." . $file->getClientOriginalExtension(),
+            'gcs'
+        );
     }
 
     public function getUserByUsername(Request $request, $username)
@@ -46,19 +62,11 @@ class UserController extends Controller
 
         try {
             $user = User::find($this->user->id);
+            $data = $request->only('first_name', 'last_name', 'email', 'avatar','password');
 
-            $data = $request->only('name', 'username', 'ktp', 'username', 'email', 'password');
-    
-            if ($request->username != $user->username) {
-                $isExistUsername = User::where('username', $request->username)->exists();
-                if ($isExistUsername) {
-                    return response(['message' => 'Username already taken'], 409);
-                }
-            }
-    
             if ($request->email != $user->email) {
-                $isExistUsername = User::where('email', $request->email)->exists();
-                if ($isExistUsername) {
+                $isExistEmail = User::where('email', $request->email)->exists();
+                if ($isExistEmail) {
                     return response(['message' => 'Email already taken'], 409);
                 }
             }
@@ -66,30 +74,26 @@ class UserController extends Controller
             if ($request->password) {
                 $data['password'] = bcrypt($request->password);
             }
-    
-            if ($request->profile_picture) {
-                $profilePicture = uploadBase64Image($request->profile_picture);
-                $data['profile_picture'] = $profilePicture;
-                if ($user->profile_picture) {
-                    Storage::delete('public/'.$user->profile_picture);
-                }
-            }
-    
-            if ($request->ktp) {
-                $ktp = uploadBase64Image($request->ktp);
-                $data['ktp'] = $ktp;
-                $data['verified'] = true;
-                if ($user->ktp) {
-                    Storage::delete('public/'.$user->ktp);
-                }
+
+            // How Retrieve Image ?
+            // return Storage::disk('gcs')->url($user->avatar);
+            if ($request->avatar){
+                $this->deleteFile($user->avatar);
+                $link = $request->hasFile('avatar') ? $this->uploadFile($request->file('avatar'), 'user_avatar') : null;
+                $data['avatar'] = $link;
             }
     
             $user->update($data);
     
-            return response()->json(['message' => 'Updated']);
+            return response()->json(['message' => 'Profil Updated!'], 200);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage()], 500);
         }
 
+    }
+
+    public function deleteFile($path = null)
+    {
+        Storage::disk('gcs')->delete($path);
     }
 }
