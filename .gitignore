@@ -13,3 +13,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+/config/logging.php
+/config/cache.php
+/app/Providers/AppServiceProvider.php

@@ -38,7 +38,7 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::get('profile', [UserController::class, 'show']);
     Route::put('profile', [UserController::class, 'update']);
     Route::post('follow', [FollowController::class, 'follow']);
-    Route::post('unfollow', [FollowController::class, 'unfollow']);
+    Route::delete('unfollow', [FollowController::class, 'unfollow']);
 
     Route::get('users/{username}', [UserController::class, 'getUserByUsername']);
 });
