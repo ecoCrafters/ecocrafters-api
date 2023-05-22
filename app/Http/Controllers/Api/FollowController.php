@@ -2,64 +2,49 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Follow;
 use Illuminate\Http\Request;
 
 class FollowController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function follow(Request $request)
     {
-        //
+        $user1 = auth()->user();
+        try {
+            $isExist = Follow::where('user_id_one', $user1->id)->where('user_id_two', $request->user_id_two)->exists();
+            if ($user1->id != $request->user_id_two && !$isExist) {
+                $follow = Follow::create([
+                    'user_id_one' => $user1->id,
+                    'user_id_two' => $request->user_id_two,
+                ]);
+                $follow['status'] = True;
+                return response()->json($follow, 200);
+            } else {
+                $follow['status'] = False;
+                return response()->json(['message' => 'Terjadi Galat, Silakan Coba Beberapa Saat Lagi atau Hubungi CS Untuk Info Lebih Lanjut.'], 500);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Terjadi Galat, Silakan Coba Beberapa Saat Lagi atau Hubungi CS Untuk Info Lebih Lanjut.'], 500);
+        }
+        
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function unfollow(Request $request)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Follow $follow)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Follow $follow)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Follow $follow)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Follow $follow)
-    {
-        //
+        $user = auth()->user();
+        $target = $request->target;
+        try {
+            $isExist = Follow::where('user_id_one', $user->id)->where('user_id_two', $request->target)->exists();
+            if ($isExist) {
+                $unfollow_data = Follow::where('user_id_one', $user->id)->where('user_id_two', $target)->delete();
+                return response()->json(['message' => 'Berhasil Unfollow'], 200);
+            } else {
+                return response()->json(['message' => 'Terjadi Galat, Silakan Coba Beberapa Saat Lagi atau Hubungi CS Untuk Info Lebih Lanjut.'], 500);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Terjadi Galat, Silakan Coba Beberapa Saat Lagi atau Hubungi CS Untuk Info Lebih Lanjut.'], 500);
+            // return response()->json(['message' => $th->getMessage()], 500);
+        }
     }
 }

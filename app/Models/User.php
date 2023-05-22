@@ -57,11 +57,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function sendPasswordResetNotification($token)
-    {
+    // public function sendPasswordResetNotification($token)
+    // {
 
-        $url = 'localhost:8000/reset-password?token=' . $token;
+    //     $url = 'localhost:8000/reset-password?token=' . $token;
 
-        $this->notify(new ResetPasswordNotification($url));
-    }
+    //     $this->notify(new ResetPasswordNotification($url));
+    // }
 }

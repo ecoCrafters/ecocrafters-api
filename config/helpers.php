@@ -13,6 +13,7 @@ function getUser($param) {
                     ->orWhere('email', $param)
                     // ->orWhere('username', $param)
                     ->first();
+    $user['avatar_url'] = Storage::disk('gcs')->url($user->avatar);
         
     // $wallet = Wallet::where('user_id', $user->id)->first();
     // $user->profile_picture = $user->profile_picture ? 

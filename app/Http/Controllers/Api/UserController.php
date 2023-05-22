@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Follow;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,7 +25,11 @@ class UserController extends Controller
     public function show()
     {
         $user = getUser($this->user->id);
-
+        $pengikut = Follow::where('user_id_two', $user->id)->pluck('user_id_one')->all();
+        $mengikuti = Follow::where('user_id_one', $user->id)->pluck('user_id_two')->all();
+        $user['pengikut'] = User::whereIn('id', $pengikut)->get();
+        $user['mengikuti'] = User::whereIn('id', $mengikuti)->get();
+        // $user['pengikut'] = User::whereIn('id', $pengikut)->get();
         return response()->json($user);
     }
 

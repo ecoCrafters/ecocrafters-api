@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ResetPasswordController;
@@ -36,5 +37,8 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('profile', [UserController::class, 'show']);
     Route::put('profile', [UserController::class, 'update']);
+    Route::post('follow', [FollowController::class, 'follow']);
+    Route::post('unfollow', [FollowController::class, 'unfollow']);
+
     Route::get('users/{username}', [UserController::class, 'getUserByUsername']);
 });
