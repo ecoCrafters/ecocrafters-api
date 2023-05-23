@@ -17,25 +17,25 @@ class AuthController extends Controller
     {
         $data = $request->all();
         // return $data;
-        
+
         $validator = Validator::make($data, [
-            'first_name' => 'required|string',
-            'last_name' => 'string',
+            'full_name' => 'required|string',
+            'username' => 'string',
             'email' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->messages()], 400);
         }
 
         $user = User::where('email', $request->email)->exists();
-        
+
         if ($user) {
             return response()->json(['message' => 'Email already taken'], 409);
         }
-        
-        
+
+
         DB::beginTransaction();
 
         try {
@@ -46,8 +46,8 @@ class AuthController extends Controller
             }
 
             $user = User::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
+                'full_name' => $request->full_name,
+                'username' => $request->username,
                 'avatar' => $avatar,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
@@ -65,8 +65,8 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->json(['message' => $th->getMessage()], 500);
-        }      
-            
+        }
+
 
     }
 
@@ -85,7 +85,7 @@ class AuthController extends Controller
 
         try {
             $token = JWTAuth::attempt($credentials);
-            
+
             if (!$token) {
                 return response()->json(['message' => 'Login credentials are invalid'], 400);
             }
@@ -100,7 +100,7 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
- 	
+
     }
 
 

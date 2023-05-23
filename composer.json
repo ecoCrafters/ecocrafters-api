@@ -11,7 +11,8 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "spatie/laravel-google-cloud-storage": "*",
+        "lcobucci/jwt": "4.0.0",
+        "spatie/laravel-google-cloud-storage": "^1.1",
         "tymon/jwt-auth": "*"
     },
     "require-dev": {
@@ -20,7 +21,7 @@
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",
-        "phpunit/phpunit": "^9.5.10"
+        "phpunit/phpunit": "^10.1"
     },
     "autoload": {
         "psr-4": {

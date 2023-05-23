@@ -1,5 +1,6 @@
 runtime: php81
 env: standard
+service: server-test
 
 runtime_config:
   document_root: .
@@ -20,19 +21,21 @@ env_variables:
   APP_STORAGE: /tmp
   VIEW_COMPILED_PATH: /tmp
   CACHE_STORE_PATH: /tmp/framework/cache/data
+  GOOGLE_CLOUD_PROJECT_ID: ecocrafters-api
+  GOOGLE_CLOUD_STORAGE_BUCKET: ecocrafters_bucket
 
 
   DB_CONNECTION: mysql
-  DB_HOST: 34.101.32.212
+  DB_HOST: 34.101.132.229
   DB_PORT: 3306
-  DB_DATABASE: ecocrafters-api
+  DB_DATABASE: ecocrafters
   DB_USERNAME: root
-  DB_PASSWORD: smkn7smd
+  DB_PASSWORD: ecocrafters551
 
   APP_NAME: EcoCrafters
   APP_ENV: production
   APP_DEBUG: true
-  APP_URL: https://ecocrafters-api.et.r.appspot.com
+  APP_URL: https://server-test-dot-ecocrafters-api.et.r.appspot.com
   ASSET_URL: ""
 
   SESSION_DRIVER: cookie
