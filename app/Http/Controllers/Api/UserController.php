@@ -36,7 +36,7 @@ class UserController extends Controller
     public function uploadFile(UploadedFile $file, $folder = null, $filename = null)
     {
         // $name = !is_null($filename) ? $filename : Str::random(25);
-        $name = "avatar-" . auth()->user()->first_name . auth()->user()->last_name;
+        $name = "avatar-" . auth()->user()->full_name;
 
         return $file->storeAs(
             $folder,
@@ -67,7 +67,7 @@ class UserController extends Controller
 
         try {
             $user = User::find($this->user->id);
-            $data = $request->only('first_name', 'last_name', 'email', 'avatar','password');
+            $data = $request->only('full_name', 'username', 'email', 'avatar','password');
 
             if ($request->email != $user->email) {
                 $isExistEmail = User::where('email', $request->email)->exists();
