@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\FollowController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ResetPasswordController;
@@ -34,11 +35,18 @@ Route::post('password/reset', [ResetPasswordController::class, '__invoke']);
 
 
 Route::group(['middleware' => 'jwt.verify'], function ($router) {
+    // User Feature
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('profile', [UserController::class, 'show']);
     Route::put('profile', [UserController::class, 'update']);
+    Route::get('users/{username}', [UserController::class, 'getUserByUsername']);
     Route::post('follow', [FollowController::class, 'follow']);
     Route::delete('unfollow', [FollowController::class, 'unfollow']);
 
-    Route::get('users/{username}', [UserController::class, 'getUserByUsername']);
+    // Post 
+    Route::post('post/create', [PostController::class, 'create']);
+    Route::get('post/{slug}/{id}', [PostController::class, 'detail']);
+    Route::get('post/{title}', [PostController::class, 'getPostByTitle']);
+    Route::get('search/{search}', [PostController::class, 'searchPostOrUser']);
+
 });

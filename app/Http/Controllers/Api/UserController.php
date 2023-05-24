@@ -47,18 +47,10 @@ class UserController extends Controller
 
     public function getUserByUsername(Request $request, $username)
     {
-        $users = User::select('id', 'name', 'username', 'verified', 'profile_picture')
-                    ->where('username', 'LIKE', '%'.$username.'%')
+        $users = User::select('id', 'full_name', 'username', 'avatar')
+                    ->where('username', $username)
                     ->where('id', '<>' ,$this->user->id)
                     ->get();
-
-        $users->map(function ($item) {
-            $item->profile_picture = $item->profile_picture ? 
-                url('storage/'.$item->profile_picture) : "";
-
-            return $item; 
-        });
-
         return response()->json($users);
     }
 

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug');
             $table->longtext('content');
-            $table->string('thumbnail');
-            $table->string('num_of_likes');
+            $table->string('thumbnail')->nullable();
+            $table->integer('num_of_likes')->default(0);
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });

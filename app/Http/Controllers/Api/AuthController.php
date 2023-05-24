@@ -19,8 +19,8 @@ class AuthController extends Controller
         // return $data;
         
         $validator = Validator::make($data, [
-            'first_name' => 'required|string',
-            'last_name' => 'string',
+            'full_name' => 'required|string',
+            'username' => 'string',
             'email' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
@@ -29,10 +29,10 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->messages()], 400);
         }
 
-        $user = User::where('email', $request->email)->exists();
+        $user = User::where('email', $request->email)->orWhere('username', $request->username)->exists();
         
         if ($user) {
-            return response()->json(['message' => 'Email already taken'], 409);
+            return response()->json(['message' => 'Email / username already taken.'], 409);
         }
         
         
@@ -46,8 +46,8 @@ class AuthController extends Controller
             }
 
             $user = User::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
+                'full_name' => $request->full_name,
+                'username' => $request->username,
                 'avatar' => $avatar,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
@@ -92,7 +92,8 @@ class AuthController extends Controller
 
             $userResponse = getUser($request->email);
             $userResponse->token = $token;
-            $userResponse->token_expires_in = auth()->factory()->getTTL() * 60;
+            $userResponse->token_expires_in = auth()->factory()->getTTL() * 120;
+            // $userResponse->token_expires_in = auth()->factory()->getTTL() * 60;
             $userResponse->token_type = 'bearer';
 
             return response()->json($userResponse);
