@@ -46,6 +46,7 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     // Post 
     Route::post('post/create', [PostController::class, 'create']);
     Route::get('post/{slug}/{id}', [PostController::class, 'detail']);
+    Route::put('post/{id}', [PostController::class, 'update']);
     Route::get('post/{title}', [PostController::class, 'getPostByTitle']);
     Route::get('search/{search}', [PostController::class, 'searchPostOrUser']);
 
