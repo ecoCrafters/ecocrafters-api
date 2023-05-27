@@ -134,5 +134,15 @@ class PostController extends Controller
     {
         Storage::disk('gcs')->delete($path);
     }
+
+    public function delete(Request $request, $id)
+    {
+        $post = Post::find($id);
+        if ($post->thumbnail != "https://storage.googleapis.com/ecocrafters_bucket/post_thumbnail/default-image.png") {
+            Storage::disk('gcs')->delete($post->thumbnail);
+        }
+        $post->delete();
+        return response()->json(['message' => 'Post Succesfully Deleted.'], 200);
+    }
     
 }
