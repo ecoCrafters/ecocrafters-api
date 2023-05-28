@@ -153,10 +153,15 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         $user = auth()->user()->id;
-        UserSavePost::create([
-            'user_id' => $user,
-            'post_id' => $id,
-        ]);
+        $check = UserSavePost::wherePostId($id)->whereUserId($user)->exists();
+        if ($check == False){
+            UserSavePost::create([
+                'user_id' => $user,
+                'post_id' => $id,
+            ]);
+        } else {
+            return response()->json(['message' => 'Post Already Saved Before.'], 500);
+        }
         return response()->json(['message' => 'Post Succesfully Saved.'], 200);
     }
     
