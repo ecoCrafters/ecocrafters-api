@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\UserSavePost;
 use Illuminate\Http\Request;
 use Str;
 use Storage;
@@ -50,7 +51,7 @@ class PostController extends Controller
                 'title' => $request->title,
                 'slug' => Str::slug($request->title),
                 'content' => $request->content,
-                'thumbnail' => $thumbnail,
+                // 'thumbnail' => $thumbnail,
                 'user_id' => auth()->user()->id,
             ]);
             $thumbnail = "https://storage.googleapis.com/ecocrafters_bucket/post_thumbnail/default-image.png";
@@ -58,6 +59,9 @@ class PostController extends Controller
                 $thumbnail = $request->hasFile('thumbnail') ? $this->uploadFile($request->file('thumbnail'), 'post_thumbnail', $post->id . "-" . Str::slug($request->title)) : null;
                 // $data['thumbnail'] = $link;
             }
+            $post->update([
+                'thumbnail' => $thumbnail,
+            ]);
             DB::commit();
             return response()->json($post, 200);
         } catch (\Throwable $th) {
@@ -143,6 +147,17 @@ class PostController extends Controller
         }
         $post->delete();
         return response()->json(['message' => 'Post Succesfully Deleted.'], 200);
+    }
+
+    public function savePost(Request $request, $id)
+    {
+        $post = Post::find($id);
+        $user = auth()->user()->id;
+        UserSavePost::create([
+            'user_id' => $user,
+            'post_id' => $id,
+        ]);
+        return response()->json(['message' => 'Post Succesfully Saved.'], 200);
     }
     
 }

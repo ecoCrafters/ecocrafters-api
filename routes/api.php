@@ -45,6 +45,7 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
 
     // Post 
     Route::post('post/create', [PostController::class, 'create']);
+    Route::post('post/save/{id}', [PostController::class, 'savePost']);
     Route::get('post/{slug}/{id}', [PostController::class, 'detail']);
     Route::put('post/{id}', [PostController::class, 'update']);
     Route::delete('post/{id}', [PostController::class, 'delete']);
