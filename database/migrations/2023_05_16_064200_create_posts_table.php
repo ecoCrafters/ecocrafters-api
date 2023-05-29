@@ -18,6 +18,7 @@ return new class extends Migration
             $table->longtext('content');
             $table->string('thumbnail')->nullable();
             $table->integer('num_of_likes')->default(0);
+            $table->integer('num_of_comments')->default(0);
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });

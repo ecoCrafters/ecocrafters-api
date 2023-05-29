@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Comment;
 use App\Models\UserSavePost;
+use App\Models\UserLikePost;
+use App\Models\UserLikeComment;
 use Illuminate\Http\Request;
 use Str;
 use Storage;
@@ -86,6 +89,12 @@ class PostController extends Controller
         return response()->json($posts, 200);
     }
 
+    public function getAllPosts(Request $request)
+    {
+        $posts = Post::get();
+        return response()->json($posts, 200);
+    }
+
     public function searchPostOrUser(Request $request, $search)
     {
         $result['posts'] = Post::where('title', 'LIKE', '%'.$search.'%')->get();
@@ -163,6 +172,61 @@ class PostController extends Controller
             return response()->json(['message' => 'Post Already Saved Before.'], 500);
         }
         return response()->json(['message' => 'Post Succesfully Saved.'], 200);
+    }
+
+    public function likePost(Request $request, $id)
+    {
+        $post = Post::find($id);
+        $user = auth()->user()->id;
+        $check = UserLikePost::wherePostId($id)->whereUserId($user)->exists();
+        if ($check == False){
+            UserLikePost::create([
+                'user_id' => $user,
+                'post_id' => $id,
+            ]);
+            $post->num_of_likes = $post->num_of_likes + 1;
+            $post->update();
+        } else {
+            return response()->json(['message' => 'Post Already Liked Before.'], 500);
+        }
+        return response()->json(['message' => 'Post Succesfully Liked.'], 200);
+    }
+
+    public function commentPost(Request $request, $id)
+    {
+        $post = Post::find($id);
+        $user = auth()->user()->id;
+        if ($request->comment) {
+            Comment::create([
+                'comment' => $request->comment,
+                'user_id' => $user,
+                'post_id' => $id,
+            ]);
+            $post->num_of_comments = $post->num_of_comments + 1;
+            $post->update();
+        } else {
+            return response()->json(['message' => 'Failed to comment, make sure you have filled the comment input.'], 500);
+        }
+        
+        return response()->json(['message' => 'Succesfully Comment on This Post.'], 200);
+    }
+
+    public function likeComment(Request $request, $id)
+    {
+        $comment = Comment::find($id);
+        $user = auth()->user()->id;
+        $check = UserLikeComment::whereCommentId($id)->whereUserId($user)->exists();
+        if ($check == False){
+            UserLikeComment::create([
+                'user_id' => $user,
+                'comment_id' => $id,
+            ]);
+            $comment->num_of_likes = $comment->num_of_likes + 1;
+            $comment->update();
+        } else {
+            return response()->json(['message' => 'Comment Already Liked Before.'], 500);
+        }
+        return response()->json(['message' => 'Comment Succesfully Liked.'], 200);
     }
     
 }
