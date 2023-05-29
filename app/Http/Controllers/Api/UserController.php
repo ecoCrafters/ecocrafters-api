@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Follow;
+use App\Models\Post;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,8 +29,10 @@ class UserController extends Controller
         $user = getUser($this->user->id);
         $pengikut = Follow::where('user_id_two', $user->id)->pluck('user_id_one')->all();
         $mengikuti = Follow::where('user_id_one', $user->id)->pluck('user_id_two')->all();
-        $user['pengikut'] = User::whereIn('id', $pengikut)->get();
-        $user['mengikuti'] = User::whereIn('id', $mengikuti)->get();
+        $user['followers'] = User::whereIn('id', $pengikut)->get();
+        $user['followings'] = User::whereIn('id', $mengikuti)->get();
+        $user['posts'] = Post::whereUserId($user->id)->orderBy('id', 'desc')->get();
+        $user['comments'] = Comment::whereUserId($user->id)->orderBy('id', 'desc')->get();
         // $user['pengikut'] = User::whereIn('id', $pengikut)->get();
         return response()->json($user);
     }
