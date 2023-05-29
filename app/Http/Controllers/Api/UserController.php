@@ -55,7 +55,12 @@ class UserController extends Controller
                     ->where('username', $username)
                     ->where('id', '<>' ,$this->user->id)
                     ->get();
-        return response()->json($users);
+        
+        if (count($users) > 0) {
+            return response()->json($users);
+        } else{
+            return response()->json(['message' => "We Couldn't Find The User With That Keyword."], 404);
+        }
     }
 
     public function update(Request $request)
@@ -65,10 +70,10 @@ class UserController extends Controller
             $user = User::find($this->user->id);
             $data = $request->only('full_name', 'username', 'email', 'avatar','password');
 
-            if ($request->email != $user->email) {
+            if ($request->email != $user->email || $request->username != $user->username) {
                 $isExistEmail = User::where('email', $request->email)->exists();
                 if ($isExistEmail) {
-                    return response(['message' => 'Email already taken'], 409);
+                    return response(['message' => 'Email / Username already taken.'], 409);
                 }
             }
     

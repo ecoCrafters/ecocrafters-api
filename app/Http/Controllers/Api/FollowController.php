@@ -19,7 +19,7 @@ class FollowController extends Controller
                     'user_id_two' => $request->user_id_two,
                 ]);
                 $follow['status'] = True;
-                return response()->json($follow, 200);
+                return response()->json(['message' => 'Berhasil Follow'], 200);
             } else {
                 $follow['status'] = False;
                 return response()->json(['message' => 'Terjadi Galat, Silakan Coba Beberapa Saat Lagi atau Hubungi CS Untuk Info Lebih Lanjut.'], 500);
