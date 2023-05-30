@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\CodeCheckController;
 use App\Http\Controllers\Api\ResetPasswordController;
@@ -56,4 +58,15 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::get('post/{title}', [PostController::class, 'getPostByTitle']);
     Route::get('search/{search}', [PostController::class, 'searchPostOrUser']);
 
+    // Tags
+    Route::get('tag/', [TagController::class, 'getAllTags']);
+    Route::post('tag/create', [TagController::class, 'create']);
+    Route::put('tag/{id}', [TagController::class, 'update']);
+    Route::delete('tag/{id}', [TagController::class, 'delete']);
+
+    // Ingredients
+    Route::get('ingredient/', [IngredientController::class, 'getAllIngredients']);
+    Route::post('ingredient/create', [IngredientController::class, 'create']);
+    Route::put('ingredient/{id}', [IngredientController::class, 'update']);
+    Route::delete('ingredient/{id}', [IngredientController::class, 'delete']);
 });

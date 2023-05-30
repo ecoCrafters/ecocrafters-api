@@ -93,12 +93,18 @@ class PostController extends Controller
     public function getPostByTitle(Request $request, $title)
     {
         $posts = Post::where('title', 'LIKE', '%'.$title.'%')->get();
+        if ($posts->count() < 1) {
+            return response()->json(['message' => 'Nothing Post To Show.'], 404);
+        }
         return response()->json($posts, 200);
     }
 
     public function getAllPosts(Request $request)
     {
         $posts = Post::get();
+        if ($posts->count() < 1) {
+            return response()->json(['message' => 'Nothing Post To Show.'], 404);
+        }
         return response()->json($posts, 200);
     }
 
@@ -106,6 +112,9 @@ class PostController extends Controller
     {
         $result['posts'] = Post::where('title', 'LIKE', '%'.$search.'%')->get();
         $result['users'] = User::where('full_name', 'LIKE', '%'.$search.'%')->get();
+        if ($result['posts']->count() < 1 && $result['users']->count() < 1) {
+            return response()->json(['message' => 'Posts & Users Are Not Available..'], 404);
+        }
         return response()->json($result, 200);
     }
 
