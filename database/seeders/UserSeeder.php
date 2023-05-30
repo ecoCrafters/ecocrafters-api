@@ -18,7 +18,8 @@ class UserSeeder extends Seeder
             'full_name' => 'Admin',
             'username' => 'admin',
             'email' => 'faturrr145@gmail.com',
-            'password' => bcrypt('admin123')
+            'password' => bcrypt('admin123'),
+            'avatar' => 'https://storage.googleapis.com/ecocrafters-api.appspot.com/avatar.png'
         ]);
     }
 }

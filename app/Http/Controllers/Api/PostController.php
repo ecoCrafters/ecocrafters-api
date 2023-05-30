@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\Tag;
+use App\Models\PostTag;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\UserSavePost;
@@ -57,6 +59,10 @@ class PostController extends Controller
                 // 'thumbnail' => $thumbnail,
                 'user_id' => auth()->user()->id,
             ]);
+            $tags = $request->tag;
+            if (isset($request->tag)) {
+                $post->tag()->sync($request->tag);
+            }
             $thumbnail = "https://storage.googleapis.com/ecocrafters_bucket/post_thumbnail/default-image.png";
             if ($request->thumbnail){
                 $thumbnail = $request->hasFile('thumbnail') ? $this->uploadFile($request->file('thumbnail'), 'post_thumbnail', $post->id . "-" . Str::slug($request->title)) : null;
@@ -79,8 +85,9 @@ class PostController extends Controller
         if ($post == NULL){
             return response()->json(['message' => 'Data Tidak Ditemukan.'], 404);
         }
+        $idTag = PostTag::select('tag_id')->wherePostId($id)->get();
+        $post['tag'] = Tag::select('id','tag')->whereIn('id', $idTag)->get();
         return response()->json($post, 200);
-        
     }
 
     public function getPostByTitle(Request $request, $title)
@@ -134,7 +141,9 @@ class PostController extends Controller
             $post->slug = Str::slug($request->title);
             // $data = $request->only('title', 'content', 'thumbnail');
             $post->update();
-
+            if (isset($request->tag)) {
+                $post->tag()->sync($request->tag);
+            }
             DB::commit();
             return response()->json($post, 200);
         } catch (\Throwable $th) {
