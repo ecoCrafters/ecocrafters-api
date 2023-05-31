@@ -209,6 +209,9 @@ class PostController extends Controller
             ]);
             $post->num_of_likes = $post->num_of_likes + 1;
             $post->update();
+            $eco_points_update = User::find($post->user_id);
+            $eco_points_update->eco_points = $eco_points_update->eco_points + 1;
+            $eco_points_update->update();
         } else {
             return response()->json(['message' => 'Post Already Liked Before.'], 500);
         }
@@ -246,6 +249,9 @@ class PostController extends Controller
             ]);
             $comment->num_of_likes = $comment->num_of_likes + 1;
             $comment->update();
+            $eco_points_update = User::find($comment->user_id);
+            $eco_points_update->eco_points = $eco_points_update->eco_points + 1;
+            $eco_points_update->update();
         } else {
             return response()->json(['message' => 'Comment Already Liked Before.'], 500);
         }
