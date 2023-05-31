@@ -42,6 +42,8 @@ class PostController extends Controller
         $validator = Validator::make($data, [
             'title' => 'required|string',
             'content' => 'required|string',
+            'tag' => 'required',
+            'ingredient' => 'required',
             'thumbnail' => 'file|image|mimes:jpeg,png,jpg|max:8012',
         ]);
         
@@ -62,6 +64,9 @@ class PostController extends Controller
             $tags = $request->tag;
             if (isset($request->tag)) {
                 $post->tag()->sync($request->tag);
+            }
+            if (isset($request->ingredient)) {
+                $post->ingredient()->sync($request->ingredient);
             }
             $thumbnail = "https://storage.googleapis.com/ecocrafters_bucket/post_thumbnail/default-image.png";
             if ($request->thumbnail){

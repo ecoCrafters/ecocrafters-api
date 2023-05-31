@@ -35,8 +35,8 @@ class Post extends Model
         return $this->belongsToMany(Ingredient::class, 'post_ingredients');
     }
 
-    public function getTagIdAttribute()
+    public function getIngredientIdAttribute()
     {
-        return $this->tag->pluck('id');
+        return $this->ingredient->pluck('id');
     }
 }
