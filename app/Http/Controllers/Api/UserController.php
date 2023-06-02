@@ -63,7 +63,8 @@ class UserController extends Controller
     public function showComments($username)
     {
         $user = getUser($username);
-        $user['comments'] = Comment::whereUserId($user->id)->orderBy('id', 'desc')->get();
+        // $user = User::whereUsername($username)->with('comments')->get();
+        $user['comments'] = Comment::select('id','comment','num_of_likes','post_id')->whereUserId($user->id)->orderBy('id', 'desc')->with('posts')->get();
         return response()->json($user);
     }
 

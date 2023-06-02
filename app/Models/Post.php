@@ -39,4 +39,5 @@ class Post extends Model
     {
         return $this->ingredient->pluck('id');
     }
+
 }
