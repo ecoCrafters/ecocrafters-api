@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Str;
 
 class TagController extends Controller
 {
@@ -36,6 +37,7 @@ class TagController extends Controller
         try {
             $tag = Tag::create([
                 'tag' => $request->tag,
+                'slug' => Str::slug($request->tag),
             ]);
             DB::commit();
             return response()->json($tag, 200);
@@ -59,6 +61,7 @@ class TagController extends Controller
         try {
             $tag = Tag::find($id);
             $tag->tag = $request->tag;
+            $tag->slug = Str::slug($request->tag),
             $tag->update();
             DB::commit();
             return response()->json($tag, 200);

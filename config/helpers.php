@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 function getUser($param) {
     $user = User::where('id', $param)
                     ->orWhere('email', $param)
+                    ->orWhere('username', $param)
                     // ->orWhere('username', $param)
                     ->first();
     $user['avatar_url'] = Storage::disk('gcs')->url($user->avatar);

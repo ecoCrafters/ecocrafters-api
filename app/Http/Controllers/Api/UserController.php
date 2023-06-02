@@ -24,16 +24,46 @@ class UserController extends Controller
         $this->user = auth()->user();
     }
 
-    public function show()
+    public function show($username)
     {
-        $user = getUser($this->user->id);
-        $pengikut = Follow::where('user_id_two', $user->id)->pluck('user_id_one')->all();
-        $mengikuti = Follow::where('user_id_one', $user->id)->pluck('user_id_two')->all();
-        $user['followers'] = User::whereIn('id', $pengikut)->get();
-        $user['followings'] = User::whereIn('id', $mengikuti)->get();
-        $user['posts'] = Post::whereUserId($user->id)->orderBy('id', 'desc')->get();
-        $user['comments'] = Comment::whereUserId($user->id)->orderBy('id', 'desc')->get();
+        $user = getUser($username);
+        // $pengikut = Follow::where('user_id_two', $user->id)->pluck('user_id_one')->all();
+        // $mengikuti = Follow::where('user_id_one', $user->id)->pluck('user_id_two')->all();
+        // $user['followers'] = User::whereIn('id', $pengikut)->get();
+        // $user['followings'] = User::whereIn('id', $mengikuti)->get();
+        // $user['posts'] = Post::whereUserId($user->id)->orderBy('id', 'desc')->get();
+        // $user['comments'] = Comment::whereUserId($user->id)->orderBy('id', 'desc')->get();
         // $user['pengikut'] = User::whereIn('id', $pengikut)->get();
+        return response()->json($user);
+    }
+
+    public function showFollowing($username)
+    {
+        $user = getUser($username);
+        $mengikuti = Follow::where('user_id_one', $user->id)->pluck('user_id_two')->all();
+        $user['followings'] = User::whereIn('id', $mengikuti)->get();
+        return response()->json($user);
+    }
+
+    public function showFollowers($username)
+    {
+        $user = getUser($username);
+        $pengikut = Follow::where('user_id_two', $user->id)->pluck('user_id_one')->all();
+        $user['followers'] = User::whereIn('id', $pengikut)->get();
+        return response()->json($user);
+    }
+
+    public function showPosts($username)
+    {
+        $user = getUser($username);
+        $user['posts'] = Post::whereUserId($user->id)->orderBy('id', 'desc')->get();
+        return response()->json($user);
+    }
+
+    public function showComments($username)
+    {
+        $user = getUser($username);
+        $user['comments'] = Comment::whereUserId($user->id)->orderBy('id', 'desc')->get();
         return response()->json($user);
     }
 
@@ -49,10 +79,12 @@ class UserController extends Controller
         );
     }
 
-    public function getUserByUsername(Request $request, $username)
+    public function searchUser(Request $request)
     {
+        $search = $request->get('q');
         $users = User::select('id', 'full_name', 'username', 'avatar')
-                    ->where('username', $username)
+                    ->where('username', $search)
+                    ->orWhere('full_name', $search)
                     ->where('id', '<>' ,$this->user->id)
                     ->get();
         

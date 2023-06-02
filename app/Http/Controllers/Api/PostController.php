@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\Ingredient;
 use App\Models\PostTag;
 use App\Models\User;
 use App\Models\Comment;
@@ -34,6 +35,26 @@ class PostController extends Controller
         );
     }
 
+    public function handleTags(Request $request, Post $post){
+        // $tagsNames = $request->get('tags');
+        $tagsNames = explode(',', $request->get('tag'));
+        foreach($tagsNames as $tagName){
+            Tag::firstOrCreate(['tag' => $tagName, 'slug' => Str::slug($tagName)])->save();
+        }
+        $tags = Tag::whereIn('tag', $tagsNames)->get();
+        $post->tag()->sync($tags);
+    }
+
+    public function handleIngredients(Request $request, Post $post){
+        // $tagsNames = $request->get('tags');
+        $ingredientsNames = explode(',', $request->get('ingredient'));
+        foreach($ingredientsNames as $ingredientName){
+            Ingredient::firstOrCreate(['name' => $ingredientName])->save();
+        }
+        $ingredients = Ingredient::whereIn('name', $ingredientsNames)->get();
+        $post->ingredient()->sync($ingredients);
+    }
+
     public function create(Request $request)
     {
         $data = $request->all();
@@ -61,12 +82,11 @@ class PostController extends Controller
                 // 'thumbnail' => $thumbnail,
                 'user_id' => auth()->user()->id,
             ]);
-            $tags = $request->tag;
             if (isset($request->tag)) {
-                $post->tag()->sync($request->tag);
+                $this->handleTags($request, $post);
             }
             if (isset($request->ingredient)) {
-                $post->ingredient()->sync($request->ingredient);
+                $this->handleIngredients($request, $post);
             }
             $thumbnail = "https://storage.googleapis.com/ecocrafters_bucket/post_thumbnail/default-image.png";
             if ($request->thumbnail){
@@ -156,7 +176,10 @@ class PostController extends Controller
             // $data = $request->only('title', 'content', 'thumbnail');
             $post->update();
             if (isset($request->tag)) {
-                $post->tag()->sync($request->tag);
+                $this->handleTags($request, $post);
+            }
+            if (isset($request->ingredient)) {
+                $this->handleIngredients($request, $post);
             }
             DB::commit();
             return response()->json($post, 200);

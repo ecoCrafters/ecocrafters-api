@@ -35,15 +35,19 @@ Route::post('password/email', [ForgotPasswordController::class, '__invoke']);
 Route::post('password/code/check', [CodeCheckController::class, '__invoke']);
 Route::post('password/reset', [ResetPasswordController::class, '__invoke']);
 
-
+Route::get('profile/{username}', [UserController::class, 'show']);
+Route::get('profile/{username}/following', [UserController::class, 'showFollowing']);
+Route::get('profile/{username}/followers', [UserController::class, 'showFollowers']);
+Route::get('profile/{username}/posts', [UserController::class, 'showPosts']);
+Route::get('profile/{username}/comments', [UserController::class, 'showComments']);
 Route::group(['middleware' => 'jwt.verify'], function ($router) {
     // User Feature
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('profile', [UserController::class, 'show']);
     Route::put('profile', [UserController::class, 'update']);
-    Route::get('users/{username}', [UserController::class, 'getUserByUsername']);
     Route::post('follow', [FollowController::class, 'follow']);
     Route::delete('unfollow', [FollowController::class, 'unfollow']);
+    Route::get('users', [UserController::class, 'searchUser']);
+
 
     // Post 
     Route::post('post/create', [PostController::class, 'create']);
