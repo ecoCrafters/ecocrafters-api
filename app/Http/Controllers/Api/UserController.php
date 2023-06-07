@@ -103,9 +103,10 @@ class UserController extends Controller
             $user = User::find($this->user->id);
             $data = $request->only('full_name', 'username', 'email', 'avatar','password');
 
-            if ($request->email != $user->email || $request->username != $user->username) {
-                $isExistEmail = User::where('email', $request->email)->exists();
-                if ($isExistEmail) {
+            if ($request->username != $user->username) {
+                // $isExistEmail = User::where('email', $request->email)->exists();
+                $isExistUsername = User::where('username', $request->username)->exists();
+                if ($isExistUsername) {
                     return response(['message' => 'Email / Username already taken.'], 409);
                 }
             }
@@ -124,7 +125,7 @@ class UserController extends Controller
     
             $user->update($data);
     
-            return response()->json(['message' => 'Profil Updated!'], 200);
+            return response()->json(getUser($user->id), 200);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage()], 500);
         }
