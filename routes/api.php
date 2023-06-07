@@ -35,11 +35,14 @@ Route::post('password/email', [ForgotPasswordController::class, '__invoke']);
 Route::post('password/code/check', [CodeCheckController::class, '__invoke']);
 Route::post('password/reset', [ResetPasswordController::class, '__invoke']);
 
+// Get Data bu Username
 Route::get('profile/{username}', [UserController::class, 'show']);
 Route::get('profile/{username}/following', [UserController::class, 'showFollowing']);
 Route::get('profile/{username}/followers', [UserController::class, 'showFollowers']);
 Route::get('profile/{username}/posts', [UserController::class, 'showPosts']);
 Route::get('profile/{username}/comments', [UserController::class, 'showComments']);
+Route::get('profile/{username}/about', [UserController::class, 'about']);
+
 Route::group(['middleware' => 'jwt.verify'], function ($router) {
     // User Feature
     Route::post('logout', [AuthController::class, 'logout']);
@@ -48,7 +51,6 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::delete('unfollow', [FollowController::class, 'unfollow']);
     Route::get('users', [UserController::class, 'searchUser']);
     Route::get('check-follow/{id_target}', [UserController::class, 'checkFollow']);
-
 
 
     // Post 

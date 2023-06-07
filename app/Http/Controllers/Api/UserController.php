@@ -143,4 +143,19 @@ class UserController extends Controller
         $check_follow = Follow::whereUserIdOne($user_login)->whereUserIdTwo($id_target)->exists();
         return response()->json($check_follow, 200);
     }
+
+    public function about($username)
+    {
+        $user_data = getUser($username);
+        $mengikuti = Follow::where('user_id_one', $user_data->id)->pluck('user_id_two')->all();
+        $pengikut = Follow::where('user_id_two', $user_data->id)->pluck('user_id_one')->all();
+        $user['ecopoints'] = $user_data->eco_points;
+        $user['followings'] = User::whereIn('id', $mengikuti)->count();
+        $user['followers'] = User::whereIn('id', $pengikut)->count();
+        $user['account_age'] = $user_data->created_at->diffForHumans();
+        $user['post_created'] = Post::whereUserId($user_data->id)->count();
+        $user['comment_created'] = Comment::whereUserId($user_data->id)->count();
+
+        return response()->json($user, 200);
+    }
 }
