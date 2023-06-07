@@ -135,4 +135,11 @@ class UserController extends Controller
     {
         Storage::disk('gcs')->delete($path);
     }
+
+    public function checkFollow($id_target)
+    {
+        $user_login = auth()->user()->id;
+        $check_follow = Follow::whereUserIdOne($user_login)->whereUserIdTwo($id_target)->exists();
+        return response()->json($check_follow, 200);
+    }
 }

@@ -47,6 +47,8 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::post('follow', [FollowController::class, 'follow']);
     Route::delete('unfollow', [FollowController::class, 'unfollow']);
     Route::get('users', [UserController::class, 'searchUser']);
+    Route::get('check-follow/{id_target}', [UserController::class, 'checkFollow']);
+
 
 
     // Post 
