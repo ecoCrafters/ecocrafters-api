@@ -40,4 +40,14 @@ class Post extends Model
         return $this->ingredient->pluck('id');
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_save_posts');
+    }
+    
+    public function getUsersIdAttribute()
+    {
+        return $this->users->pluck('id');
+    }
+
 }

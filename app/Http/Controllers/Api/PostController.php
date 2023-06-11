@@ -220,6 +220,16 @@ class PostController extends Controller
         return response()->json(['message' => 'Post Succesfully Saved.'], 200);
     }
 
+    public function savedPost(Request $request)
+    {
+        $user = auth()->user()->id;
+        $saved_posts = User::whereId($user)->with('saved_posts')->first();
+        if ($saved_posts->saved_posts->count() < 1) {
+            return response()->json(['message' => "Nothing Data To Show."], 404);
+        }
+        return response()->json($saved_posts, 200);
+    }
+
     public function likePost(Request $request, $id)
     {
         $post = Post::find($id);

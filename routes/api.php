@@ -44,6 +44,9 @@ Route::get('profile/{username}/comments', [UserController::class, 'showComments'
 Route::get('profile/{username}/about', [UserController::class, 'about']);
 
 Route::group(['middleware' => 'jwt.verify'], function ($router) {
+    // Refresh Token JWT
+    Route::get('refresh-token', [AuthController::class, 'refreshToken']);
+
     // User Feature
     Route::post('logout', [AuthController::class, 'logout']);
     Route::put('profile', [UserController::class, 'update']);
@@ -56,6 +59,7 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     // Post 
     Route::post('post/create', [PostController::class, 'create']);
     Route::post('post/save/{id}', [PostController::class, 'savePost']);
+    Route::post('post/saved', [PostController::class, 'savedPost']);
     Route::post('post/like/{id}', [PostController::class, 'likePost']);
     Route::post('post/comment/{id}', [PostController::class, 'commentPost']);
     Route::post('post/like/comment/{id}', [PostController::class, 'likeComment']);

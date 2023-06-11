@@ -65,4 +65,14 @@ class User extends Authenticatable implements JWTSubject
     //     $this->notify(new ResetPasswordNotification($url));
     // }
 
+    public function saved_posts()
+    {
+        return $this->belongsToMany(Post::class, 'user_save_posts');
+    }
+
+    public function getPostIdAttribute()
+    {
+        return $this->saved_posts->pluck('id');
+    }
+
 }

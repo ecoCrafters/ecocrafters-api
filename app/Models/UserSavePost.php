@@ -13,4 +13,9 @@ class UserSavePost extends Model
         'user_id',
         'post_id',
     ];
+
+    public function posts()
+    {
+        return $this->belongsTo('App\Models\Post', 'post_id');
+    }
 }
