@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+Route::get('/create-content', [PostController::class, 'createContent'])->name('content.create');
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'guest']], function () {
+     \UniSharp\LaravelFilemanager\Lfm::routes();
+ });

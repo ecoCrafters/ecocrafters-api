@@ -290,5 +290,10 @@ class PostController extends Controller
         }
         return response()->json(['message' => 'Comment Succesfully Liked.'], 200);
     }
+
+    public function createContent()
+    {
+        return view('create-content');
+    }
     
 }
