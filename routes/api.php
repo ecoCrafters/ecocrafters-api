@@ -59,6 +59,8 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     // Post 
     Route::post('post/create', [PostController::class, 'create']);
     Route::post('post/save/{id}', [PostController::class, 'savePost']);
+    Route::post('post/unsave/{id}', [PostController::class, 'unsavePost']);
+    Route::get('post/check-saved-post/{id}', [PostController::class, 'checkSaved']);
     Route::post('post/saved', [PostController::class, 'savedPost']);
     Route::post('post/like/{id}', [PostController::class, 'likePost']);
     Route::post('post/comment/{id}', [PostController::class, 'commentPost']);

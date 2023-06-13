@@ -117,19 +117,23 @@ class PostController extends Controller
 
     public function getPostByTitle(Request $request, $title)
     {
-        $posts = Post::where('title', 'LIKE', '%'.$title.'%')->get();
-        if ($posts->count() < 1) {
-            return response()->json(['message' => 'Nothing Post To Show.'], 404);
-        }
+        $posts = Post::where('title', 'LIKE', '%'.$title.'%')->with('user')->get();
+        $posts->map(function ($item) {
+            $item['user']['avatar_url'] = $item['user']['avatar'] ? "https://storage.googleapis.com/ecocrafters_bucket/".$item['user']['avatar'] : "https://storage.googleapis.com/ecocrafters-api.appspot.com/avatar.png";
+
+            return $item; 
+        });
         return response()->json($posts, 200);
     }
 
     public function getAllPosts(Request $request)
     {
-        $posts = Post::get();
-        if ($posts->count() < 1) {
-            return response()->json(['message' => 'Nothing Post To Show.'], 404);
-        }
+        $posts = Post::with('user')->get();
+        $posts->map(function ($item) {
+            $item['user']['avatar_url'] = $item['user']['avatar'] ? "https://storage.googleapis.com/ecocrafters_bucket/".$item['user']['avatar'] : "https://storage.googleapis.com/ecocrafters-api.appspot.com/avatar.png";
+
+            return $item; 
+        });
         return response()->json($posts, 200);
     }
 
@@ -220,14 +224,30 @@ class PostController extends Controller
         return response()->json(['message' => 'Post Succesfully Saved.'], 200);
     }
 
+    public function unsavePost(Request $request, $id)
+    {
+        $post = Post::find($id);
+        $user = auth()->user()->id;
+        $check = UserSavePost::wherePostId($id)->whereUserId($user)->delete();
+        return response()->json(['message' => 'Post Succesfully Unsaved.'], 200);
+    }
+
     public function savedPost(Request $request)
     {
         $user = auth()->user()->id;
         $saved_posts = User::whereId($user)->with('saved_posts')->first();
-        if ($saved_posts->saved_posts->count() < 1) {
-            return response()->json(['message' => "Nothing Data To Show."], 404);
-        }
+        // if ($saved_posts->saved_posts->count() < 1) {
+        //     return response()->json(['message' => "Nothing Data To Show."], 404);
+        // }
         return response()->json($saved_posts, 200);
+    }
+
+    public function checkSaved($id)
+    {
+        $post = Post::find($id);
+        $user = auth()->user()->id;
+        $check = UserSavePost::wherePostId($id)->whereUserId($user)->exists();
+        return response()->json($check, 200);
     }
 
     public function likePost(Request $request, $id)

@@ -92,7 +92,7 @@ class UserController extends Controller
         if (count($users) > 0) {
             return response()->json($users);
         } else{
-            return response()->json(['message' => "We Couldn't Find The User With That Keyword."], 404);
+            return response()->json($users, 200);
         }
     }
 
