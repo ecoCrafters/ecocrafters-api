@@ -58,7 +58,7 @@ class AuthController extends Controller
 
             $userResponse = getUser($user->id);
             $userResponse->token = $token;
-            $userResponse->token_expires_in = auth()->factory()->getTTL() * 60;
+            $userResponse->token_expires_in = auth()->factory()->getTTL() * 120;
             $userResponse->token_type = 'bearer';
 
             return response()->json($userResponse, 200);

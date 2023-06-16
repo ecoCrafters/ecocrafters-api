@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\DetectionController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\NewPasswordController;
@@ -61,7 +62,7 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::post('post/save/{id}', [PostController::class, 'savePost']);
     Route::post('post/unsave/{id}', [PostController::class, 'unsavePost']);
     Route::get('post/check-saved-post/{id}', [PostController::class, 'checkSaved']);
-    Route::post('post/saved', [PostController::class, 'savedPost']);
+    Route::get('post/saved', [PostController::class, 'savedPost']);
     Route::post('post/like/{id}', [PostController::class, 'likePost']);
     Route::post('post/comment/{id}', [PostController::class, 'commentPost']);
     Route::post('post/like/comment/{id}', [PostController::class, 'likeComment']);
@@ -71,6 +72,7 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::delete('post/{id}', [PostController::class, 'delete']);
     Route::get('post/{title}', [PostController::class, 'getPostByTitle']);
     Route::get('search/{search}', [PostController::class, 'searchPostOrUser']);
+    Route::get('post/{tag_id}', [PostController::class, 'getPostByTag']);
 
     // Tags
     Route::get('tag/', [TagController::class, 'getAllTags']);
@@ -83,4 +85,8 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::post('ingredient/create', [IngredientController::class, 'create']);
     Route::put('ingredient/{id}', [IngredientController::class, 'update']);
     Route::delete('ingredient/{id}', [IngredientController::class, 'delete']);
+
+    // Image Detection
+    Route::post('detection/upload', [DetectionController::class, 'upload']);
+
 });

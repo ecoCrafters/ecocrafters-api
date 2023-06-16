@@ -84,11 +84,15 @@ class UserController extends Controller
     {
         $search = $request->get('q');
         $users = User::select('id', 'full_name', 'username', 'avatar')
-                    ->where('username', $search)
-                    ->orWhere('full_name', $search)
-                    ->where('id', '<>' ,$this->user->id)
+                    ->where('username', 'LIKE', '%'.$search.'%')
+                    ->orWhere('full_name', 'LIKE', '%'.$search.'%')
+                    // ->where('id', '<>' ,$this->user->id)
                     ->get();
-        
+        $users->map(function ($item) {
+            $item['avatar_url'] = $item['avatar'] ? "https://storage.googleapis.com/ecocrafters_bucket/".$item['avatar'] : "https://storage.googleapis.com/ecocrafters-api.appspot.com/avatar.png";
+
+            return $item; 
+        });
         if (count($users) > 0) {
             return response()->json($users);
         } else{

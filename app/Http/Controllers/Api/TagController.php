@@ -61,7 +61,7 @@ class TagController extends Controller
         try {
             $tag = Tag::find($id);
             $tag->tag = $request->tag;
-            $tag->slug = Str::slug($request->tag),
+            $tag->slug = Str::slug($request->tag);
             $tag->update();
             DB::commit();
             return response()->json($tag, 200);

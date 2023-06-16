@@ -112,6 +112,8 @@ class PostController extends Controller
         }
         $idTag = PostTag::select('tag_id')->wherePostId($id)->get();
         $post['tag'] = Tag::select('id','tag')->whereIn('id', $idTag)->get();
+        $post['user'] = getUser($post->user_id);
+        $post['comments'] = Comment::wherePostId($post->id)->with('user')->get();
         return response()->json($post, 200);
     }
 
@@ -235,10 +237,17 @@ class PostController extends Controller
     public function savedPost(Request $request)
     {
         $user = auth()->user()->id;
-        $saved_posts = User::whereId($user)->with('saved_posts')->first();
-        // if ($saved_posts->saved_posts->count() < 1) {
-        //     return response()->json(['message' => "Nothing Data To Show."], 404);
-        // }
+        // $saved_posts['user'] = User::whereId($user)->first();
+        $saved_posts['user'] = getUser($user);
+        // $saved_posts['posts'] = UserSavePost::whereUserId($user)->with('posts')->get();
+        $saved = UserSavePost::whereUserId($user)->pluck('post_id');
+        $saved_posts['posts'] = Post::whereIn('id', $saved)->with('user')->get();
+        $saved_posts['posts']->map(function ($item) {
+            $item['user']['avatar_url'] = $item['user']['avatar'] ? "https://storage.googleapis.com/ecocrafters_bucket/".$item['user']['avatar'] : "https://storage.googleapis.com/ecocrafters-api.appspot.com/avatar.png";
+
+            return $item; 
+        });
+        
         return response()->json($saved_posts, 200);
     }
 
