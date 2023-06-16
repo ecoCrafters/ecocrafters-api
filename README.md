@@ -1,3 +1,15 @@
+<p align="center">
+	<a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a>
+	<img src="https://storage.googleapis.com/ecocrafters_bucket/EcoCrafters.jpg" width="400">
+</p>
+
+<p align="center">
+<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
+
 # EcoCrafters Laravel API
 
 This repository contains the source code for the EcoCrafters API, a Laravel-based API for the EcoCrafters project. The API provides endpoints to interact with the EcoCrafters platform and perform various operations related to crafts, users, and detection system.
@@ -49,7 +61,7 @@ The EcoCrafters API provides the following endpoints by the documentation link b
 
 https://documenter.getpostman.com/view/11927320/2s93m1Z44Y
 
-Refer to the [API documentation](/docs/api.md) for more details on each endpoint, their request/response formats, and required authentication.
+Refer to the for more details on each endpoint, their request/response formats, and required authentication.
 
 ## Contributing
 
